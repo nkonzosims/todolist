@@ -1,0 +1,10 @@
+@use '../../../styles' as *;
+
+.user-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.error {
+  color: $color-danger;
+}

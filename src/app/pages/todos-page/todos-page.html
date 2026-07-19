@@ -1,0 +1,36 @@
+<section>
+  <a class="back-link" routerLink="/users">← Back to users</a>
+
+  <div class="heading">
+    <div>
+      <h1>Todos</h1>
+      @if (userId) {
+        <p>Showing todos for user {{ userId }}.</p>
+      }
+    </div>
+  </div>
+
+  @if (loading$ | async) {
+    <p>Loading todos…</p>
+  } @else if (error$ | async; as error) {
+    <p class="error" role="alert">{{ error }}</p>
+  } @else {
+    <ul class="todo-list">
+      @for (todo of todos$ | async; track todo.id) {
+        <li [class.completed]="todo.completed">
+          <span class="status" aria-hidden="true">{{ todo.completed ? '✓' : '○' }}</span>
+          <span>{{ todo.title }}</span>
+        </li>
+      } @empty {
+        <li>No todos found.</li>
+      }
+    </ul>
+
+    <app-pagination
+      [currentPage]="(currentPage$ | async) ?? 1"
+      [pageSize]="(pageSize$ | async) ?? 10"
+      [totalItems]="(totalItems$ | async) ?? 0"
+      (pageChange)="changePage($event)"
+    />
+  }
+</section>

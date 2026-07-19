@@ -1,0 +1,24 @@
+<section>
+  <h1>Users</h1>
+
+  @if (loading$ | async) {
+    <p>Loading users…</p>
+  } @else if (error$ | async; as error) {
+    <p class="error" role="alert">{{ error }}</p>
+  } @else {
+    <div class="user-list">
+      @for (user of users$ | async; track user.id) {
+        <app-user-card [user]="user" (selected)="viewTodos($event)" />
+      } @empty {
+        <p>No users found.</p>
+      }
+    </div>
+
+    <app-pagination
+      [currentPage]="(currentPage$ | async) ?? 1"
+      [pageSize]="(pageSize$ | async) ?? 5"
+      [totalItems]="(totalItems$ | async) ?? 0"
+      (pageChange)="changePage($event)"
+    />
+  }
+</section>
