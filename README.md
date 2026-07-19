@@ -58,15 +58,23 @@ npm test -- --runInBand
 npm run build
 ```
 
-## Architecture
+## Key architectural decisions
 
-- `src/app/pages` contains the routed Users and Todos pages.
-- `src/app/components` contains reusable presentational components.
-- `src/app/state` contains NgRx actions, reducers, selectors, and effects.
-- `src/app/shared/service` contains the HTTP API services.
-- `src/styles` contains shared SCSS variables.
+- **Standalone Angular components:** avoids NgModules and keeps page dependencies explicit.
+- **NgRx state management:** actions describe user intent, effects handle HTTP requests, reducers update state, and selectors expose users, todos, loading, errors, and pagination.
+- **Container and presentational components:** routed pages connect to NgRx while user cards and pagination remain reusable UI components.
+- **Client-side pagination:** JSONPlaceholder returns complete collections, so pagination is derived through memoized selectors without additional API calls.
+- **Shared design tokens:** SCSS variables provide consistent feature, status, text, and surface colors.
+- **Automated quality checks:** Jest, Angular ESLint, Prettier, and GitHub Actions provide a repeatable path to a production artifact.
 
-NgRx effects call the API services, reducers store users, todos, pagination, loading, and error state, and pages read that state through selectors.
+## What I would improve with more time
+
+- Add route focus management, live-region announcements, contrast-safe colors, and automated accessibility tests.
+- Move pagination to the server for APIs that support paginated responses and very large datasets.
+- Add end-to-end tests for the user-to-todos journey and keyboard navigation.
+- Introduce environment-based API configuration instead of relying on a deployment proxy.
+- Add retry actions and richer empty/error states for failed API requests.
+- Add an automated deployment stage after the CI artifact has passed the required checks.
 
 ## Production deployment
 
