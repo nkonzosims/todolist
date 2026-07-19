@@ -1,60 +1,78 @@
-# PollinateAssessment
+# Pollinate Assessment
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.7.
+An Angular 21 application for browsing users and their todos. It uses NgRx for state management, Angular Router for page navigation, Jest for unit tests, ESLint for static analysis, and Prettier for formatting.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- Node.js 22
+- npm 11
 
-```bash
-ng serve
-```
+## Run the app locally
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Install the locked dependencies:
 
 ```bash
-ng generate component component-name
+npm ci
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Start the development server:
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Open [http://localhost:4200](http://localhost:4200). The development server reloads when source files change.
 
-To build the project run:
+The local server uses `proxy.config.json` to forward `/api` requests to [JSONPlaceholder](https://jsonplaceholder.typicode.com), so no API key or local backend is required.
+
+## Available routes
+
+- `/users` — paginated user list
+- `/todos` — paginated list of all todos
+- `/todos?userId=1` — todos belonging to a selected user
+
+Unknown routes redirect to `/users`.
+
+## Development commands
+
+| Command                   | Purpose                                            |
+| ------------------------- | -------------------------------------------------- |
+| `npm start`               | Start the local development server                 |
+| `npm run build`           | Create an optimized production build in `dist/`    |
+| `npm test -- --runInBand` | Run the Jest test suite once                       |
+| `npm run test:watch`      | Run Jest in watch mode                             |
+| `npm run test:coverage`   | Generate the test coverage report                  |
+| `npm run lint`            | Check TypeScript and Angular templates with ESLint |
+| `npm run lint:fix`        | Automatically fix supported lint issues            |
+| `npm run format`          | Format the repository with Prettier                |
+| `npm run format:check`    | Check formatting without changing files            |
+| `npm run quality`         | Run the formatting and lint quality gate           |
+
+## Verify a change
+
+Before opening a pull request, run the same primary checks used by CI:
 
 ```bash
-ng build
+npm run quality
+npm test -- --runInBand
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Architecture
 
-## Running unit tests
+- `src/app/pages` contains the routed Users and Todos pages.
+- `src/app/components` contains reusable presentational components.
+- `src/app/state` contains NgRx actions, reducers, selectors, and effects.
+- `src/app/shared/service` contains the HTTP API services.
+- `src/styles` contains shared SCSS variables.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+NgRx effects call the API services, reducers store users, todos, pagination, loading, and error state, and pages read that state through selectors.
 
-```bash
-ng test
-```
+## Production deployment
 
-## Running end-to-end tests
+`npm run build` creates static production files under `dist/`. Deploy those files to a static host or web server configured to:
 
-For end-to-end (e2e) testing, run:
+1. Fall back to `index.html` for client-side routes such as `/users` and `/todos`.
+2. Forward `/api/*` requests to `https://jsonplaceholder.typicode.com/*`, matching the development proxy behavior.
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-# todolist
+The GitHub Actions workflow validates pull requests and pushes to `main`, then uploads the production `dist/` directory as a build artifact. It does not deploy automatically.
