@@ -76,3 +76,12 @@ NgRx effects call the API services, reducers store users, todos, pagination, loa
 2. Forward `/api/*` requests to `https://jsonplaceholder.typicode.com/*`, matching the development proxy behavior.
 
 The GitHub Actions workflow validates pull requests and pushes to `main`, then uploads the production `dist/` directory as a build artifact. It does not deploy automatically.
+
+### CI configuration
+
+The workflow reads its Node.js version from the `NODE_VERSION` GitHub Actions repository secret. Before running CI for the first time:
+
+1. Open the repository on GitHub.
+2. Go to **Settings → Secrets and variables → Actions**.
+3. Select **New repository secret**.
+4. Use `NODE_VERSION` as the name and `22` as the value.
